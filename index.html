@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gyankshetra - Uttak (Tissue) Part 2 Mock Test</title>
+    <style>
+        :root {
+            --primary: #0a5c36;
+            --primary-light: #e8f5e9;
+            --accent: #2e7d32;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #212529;
+            --border: #e0e0e0;
+            --dark-header-bg: #121824;
+        }
+
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 480px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            overflow: hidden;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        /* Dark Theme Banner matching image */
+        .custom-quiz-header {
+            background-color: var(--dark-header-bg);
+            color: #ffffff;
+            padding: 16px;
+            border-radius: 14px;
+            margin: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .brand-logo-text {
+            color: #fbc02d;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .timer-display {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #ffffff;
+            font-family: monospace;
+        }
+
+        .header-mid-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+        }
+
+        .quiz-badge {
+            background-color: #fbc02d;
+            color: #000000;
+            font-size: 0.8rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .subject-title {
+            font-size: 0.9rem;
+            color: #d0d7de;
+        }
+
+        .header-bottom-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 10px;
+            font-size: 0.85rem;
+        }
+
+        .mark-stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .mark-correct {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .mark-wrong {
+            color: #e53935;
+            font-weight: bold;
+        }
+
+        .icon-circle {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: white;
+        }
+        .icon-green { background-color: #2e7d32; }
+        .icon-red { background-color: #e53935; }
+
+        /* Screens */
+        .screen {
+            display: none;
+            padding: 15px;
+            flex: 1;
+            flex-direction: column;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        .badge-category {
+            align-self: flex-start;
+            background: #e8f5e9;
+            color: var(--primary);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            border: 1px solid #c8e6c9;
+        }
+
+        .test-title {
+            font-size: 1.25rem;
+            color: var(--text);
+            margin-bottom: 5px;
+        }
+
+        .test-subtitle {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card {
+            background: #f8f9fa;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+        }
+
+        .stat-card .val {
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        .stat-card .lbl {
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .instructions-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .instructions-card h4 {
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        .instructions-card ul {
+            padding-left: 18px;
+            font-size: 0.8rem;
+            color: #444;
+        }
+
+        .instructions-card li {
+            margin-bottom: 4px;
+        }
+
+        .note-box {
+            background: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            margin-bottom: 15px;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .btn-main {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn-main:hover {
+            background: #08492b;
+        }
+
+        /* Test Screen */
+        .candidate-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f0f4f1;
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .menu-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .q-count {
+            font-size: 0.85rem;
+            color: var(--primary);
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .option-btn {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: white;
+            text-align: left;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .option-btn.selected {
+            border-color: var(--primary);
+            background: #e8f5e9;
+            font-weight: 600;
+        }
+
+        .nav-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: auto;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            flex: 1;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .btn-primary-nav {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            flex: 1;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .modal-card {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .palette-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .palette-num {
+            padding: 8px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .palette-num.answered {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Results */
+        .result-header {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .result-header h2 {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .res-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+        }
+
+        .res-table td {
+            padding: 6px 8px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .res-table td:last-child {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        .leaderboard-box {
+            background: #f8f9fa;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 12px;
+        }
+
+        .leaderboard-box h4 {
+            font-size: 0.85rem;
+            color: var(--primary);
+            margin-bottom: 6px;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            padding: 4px 0;
+            border-bottom: 1px dashed #e0e0e0;
+        }
+
+        .btn-reattempt {
+            background: #ffb300;
+            color: #000;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        /* Analysis */
+        .analysis-card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px;
+            margin-bottom: 10px;
+            font-size: 0.82rem;
+        }
+
+        .analysis-q-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .ans-status {
+            font-size: 0.78rem;
+            margin-bottom: 4px;
+        }
+
+        .ans-status.correct { color: green; }
+        .ans-status.wrong { color: red; }
+        .ans-status.not-attempted { color: orange; }
+
+        .explanation-box {
+            background: #fffde7;
+            border-left: 3px solid #fbc02d;
+            padding: 6px 8px;
+            margin-top: 6px;
+            border-radius: 4px;
+        }
+
+        .explanation-box ul {
+            padding-left: 14px;
+            margin-top: 4px;
+        }
+
+        .explanation-box li {
+            margin-bottom: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- DARK THEME BANNER (MATCHED TO IMAGE) -->
+    <div class="custom-quiz-header">
+        <div class="header-top-row">
+            <div class="brand-logo-text">Gyankshetra</div>
+            <div class="timer-display" id="header-timer">31:00</div>
+        </div>
+
+        <div class="header-mid-row">
+            <span class="quiz-badge">अभ्यास क्विज़ - 2026</span>
+            <span class="subject-title" id="header-subject-title">विषय: जीव विज्ञान (उत्तक - भाग 2)</span>
+        </div>
+
+        <div class="header-bottom-row">
+            <div class="mark-stat">
+                <span class="icon-circle icon-green">✓</span>
+                <span>सही: <span class="mark-correct">+1.0</span></span>
+            </div>
+            <div class="mark-stat">
+                <span class="icon-circle icon-red">✕</span>
+                <span>गलत: <span class="mark-wrong">-0.33 (1/3)</span></span>
+            </div>
+            <div class="mark-stat">
+                <span>1/2≡ कुल प्रश्न: <b id="header-total-q">31</b></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. START SCREEN -->
+    <div id="screen-start" class="screen active">
+        <div class="badge-category">BPSC TRE 4 MOCK TEST - BIOLOGY</div>
+        <h2 class="test-title" id="display-test-title">जीव विज्ञान: उत्तक (Tissue) - भाग 2 (प्रश्न 30-60)</h2>
+        <p class="test-subtitle">Bihar Public Service Commission - Teacher Recruitment Exam</p>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="val" id="stat-mcqs">31 Qs</div>
+                <div class="lbl">Total Questions</div>
+            </div>
+            <div class="stat-card">
+                <div class="val" id="stat-duration">31 Mins</div>
+                <div class="lbl">Time Duration</div>
+            </div>
+            <div class="stat-card">
+                <div class="val">1/3</div>
+                <div class="lbl">Negative Marking</div>
+            </div>
+        </div>
+
+        <div class="instructions-card">
+            <h4>📋 Instructions</h4>
+            <ul>
+                <li>सभी प्रश्न बहुविकल्पीय हैं।</li>
+                <li>प्रत्येक सही उत्तर पर 1 अंक प्राप्त होंगे।</li>
+                <li>प्रत्येक 3 गलत उत्तर देने पर 1 अंक कटेंगे (-0.33)।</li>
+                <li>BPSC पैटर्न के अनुसार कुल 5 विकल्प दिए गए हैं।</li>
+            </ul>
+        </div>
+
+        <div class="note-box">
+            नोट: प्रश्न का उत्तर नहीं देने पर विकल्प (E) का चयन करना आवश्यक है। चयन नहीं करने पर प्रत्येक प्रश्न का 1/3 नकारात्मक अंक कटेगा।
+        </div>
+
+        <div class="input-group">
+            <label>Candidate Name</label>
+            <input type="text" id="candidate-name-input" placeholder="Enter your full name...">
+        </div>
+
+        <button class="btn-main" onclick="startTest()">START TEST ➔</button>
+    </div>
+
+    <!-- 2. TEST SCREEN -->
+    <div id="screen-test" class="screen">
+        <div class="candidate-bar">
+            <span>Candidate: <span id="test-candidate-display">---</span></span>
+            <button class="menu-btn" onclick="togglePalette(true)">☰</button>
+        </div>
+
+        <div class="q-count" id="q-count-text">Q30 of 60</div>
+        <div class="question-text" id="question-text-box">Loading...</div>
+
+        <div class="options-container" id="options-container">
+            <!-- Dynamic Options -->
+        </div>
+
+        <div class="nav-btns">
+            <button class="btn-secondary" onclick="prevQuestion()">Previous</button>
+            <button class="btn-primary-nav" id="next-btn" onclick="nextQuestion()">Next ➔</button>
+        </div>
+    </div>
+
+    <!-- 3. RESULT SCREEN -->
+    <div id="screen-result" class="screen">
+        <div class="result-header">
+            <div style="font-size: 1.8rem;">🎉</div>
+            <h2>Result Summary</h2>
+            <p style="font-size: 0.8rem; color: #666;">Test Submitted Successfully</p>
+        </div>
+
+        <table class="res-table">
+            <tr><td>Candidate Name:</td><td id="res-name">---</td></tr>
+            <tr><td>Total Questions:</td><td id="res-total">31</td></tr>
+            <tr><td>Attempted:</td><td id="res-attempted">0</td></tr>
+            <tr><td>Correct Answers (+1):</td><td id="res-correct" style="color: green;">0</td></tr>
+            <tr><td>Wrong Answers (-0.33):</td><td id="res-wrong" style="color: red;">0</td></tr>
+            <tr><td>Final Score:</td><td id="res-score" style="color: var(--primary);">0.00</td></tr>
+            <tr><td>Your Rank:</td><td id="res-rank" style="color: orange;">-</td></tr>
+        </table>
+
+        <div class="leaderboard-box">
+            <h4>🏆 Top 5 Scorers</h4>
+            <div id="leaderboard-list">
+                <!-- Top 5 dynamically rendered -->
+            </div>
+        </div>
+
+        <button class="btn-main" onclick="showAnalysisPage(0)">CONTINUE TO AI ANALYSIS ➔</button>
+        <button class="btn-reattempt" onclick="resetToHome()">🔄 REATTEMPT</button>
+    </div>
+
+    <!-- 4. ANALYSIS SCREEN -->
+    <div id="screen-analysis" class="screen">
+        <h3 style="margin-bottom: 10px; color: var(--primary); font-size: 1.1rem;">AI Analysis & Solutions</h3>
+        <div id="analysis-content">
+            <!-- Questions rendered here -->
+        </div>
+
+        <div class="nav-btns" style="margin-top: auto;">
+            <button class="btn-secondary" id="analysis-prev-btn" onclick="prevAnalysisPage()">← PREV</button>
+            <button class="btn-primary-nav" id="analysis-next-btn" onclick="nextAnalysisPage()">NEXT →</button>
+        </div>
+        <button class="btn-main" style="margin-top: 8px; background: #2e7d32;" onclick="resetToHome()">🏠 FINISH TO HOME</button>
+    </div>
+
+    <!-- Question Palette Modal -->
+    <div class="modal-overlay" id="palette-modal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <span>Question Palette</span>
+                <span style="cursor: pointer;" onclick="togglePalette(false)">✕</span>
+            </div>
+            <div class="palette-grid" id="palette-grid">
+                <!-- Palette dynamically rendered -->
+            </div>
+            <button class="btn-main" onclick="submitTest()">✓ Submit Test</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// Questions Data (Q30 to Q60 - 31 Questions)
+const testQuestions = [
+    {
+        q: "Q30. जाइलम (Xylem) उत्तक का कौन सा घटक जीवित कोशिका (Living Cell) का बना होता है?",
+        options: ["(A) वाहिनिकाएँ (Tracheids)", "(B) वाहिकाएँ (Vessels)", "(C) जाइलम पैरेंकाइमा (Xylem Parenchyma)", "(D) उपर्युक्त में से एक से अधिक / उपर्युक्त में से सभी गलत", "(E) उपर्युक्त में से कोई नहीं / प्रयास नहीं किया गया"],
+        ans: 2,
+        points: [
+            "जाइलम पैरेंकाइमा जाइलम उत्तक का एकमात्र जीवित घटक है।",
+            "Tracheids, Vessels और Xylem Fibres मृत (Dead) कोशिकाएँ होती हैं।",
+            "यह भोजन का भंडारण (Food Storage) और जल के पार्श्वीय संवहन (Radial Conduction) का कार्य करता है।"
+        ]
+    },
+    {
+        q: "Q31. फ्लोएम (Phloem) उत्तक का कौन सा अवयव मृत कोशिका (Dead Cell) का बना होता है?",
+        options: ["(A) चालनी नलिका (Sieve Tubes)", "(B) सह कोशिकाएँ (Companion Cells)
